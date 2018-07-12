@@ -16,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/zihao-AL/node-demo/issues"
   },
-  "homepage": "https://github.com/zihao-AL/node-demo#readme"
+  "homepage": "https://github.com/zihao-AL/node-demo#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongodb": "^3.1.1",
+    "xtemplate": "^4.6.1",
+    "xtpl": "^3.4.0"
+  }
 }
