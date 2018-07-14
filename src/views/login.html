@@ -60,20 +60,19 @@
     })
 
     function login() {
+
         let username = $('#usernameId').val();
         if(username == '') {
             return false;
         }
+        
         let password = $.md5($('#passwordId').val());
         if(password == '') {
             return false;
         }
-        console.log(password);
 
         let vcode = $('#vcodeId').val();
-
         if(vcode.length != 4) {
-            
             return false;
         }
         
@@ -86,9 +85,13 @@
             },
             type: 'post',
             success: function(data) {
-                alert(data.message);
+                
                 if(data.message == '登录成功') {
+                    alert(data.message);
                     location.href = '/student/list.html';
+                }else {
+                    alert(data.message);
+                    $('#vcodeimg').attr('src', "/account/vcode?random="+Math.random() * 1000);
                 }
             }
         })
@@ -121,8 +124,12 @@
             },
             type: 'post',
             success: function(data) {
-
-                alert(data.message);
+                if(data.message == '注册成功') {
+                    alert(data.message);
+                }else {
+                    alert(data.message);
+                    $('#vcodeimg').attr('src', "/account/vcode?random="+Math.random() * 1000);
+                }
             }
         })
     }

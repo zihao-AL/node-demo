@@ -1,15 +1,10 @@
 // 引入path模块
 const path = require('path');
 // 数据库
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-// 数据库的路径
-const DBurl = "mongodb://localhost:27017";
-// 连接的数据库名称
-const dbname = "test";
+const databasetool = require(path.join(__dirname, "../tools/tool.js"));
 
 // 引入随机数字图片
-let captchapng = require('captchapng');
+const captchapng = require('captchapng');
 // 登录页面
 exports.getLoginPage = (req, res) => {
     res.sendFile(path.join(__dirname, "../views/login.html"))
@@ -35,91 +30,54 @@ exports.getImgPage = (req, res) => {
 }
 // 登录函数
 exports.doLoginPage = (req, res) => {
-    // console.log(req.session.vcode);
     // 拿到用户名和密码
-    const userInfo = req.body;
-    if(userInfo.vcode != req.session.vcode) {
+    const {username, password} = req.body;
+    if(req.body.vcode != req.session.vcode) {
         res.send({ message: '验证码错误' })
         return false;
     }
 
-    MongoClient.connect(DBurl, {useNewUrlParser: true}, (err, client) => {
-        // 断言 判断是否报错, 是就停止函数
-        assert.equal(null, err);
-        //console.log('连接成功');
-
-        const db = client.db(dbname);
-        // Get the documents collection 要连接的集合/表
-        const collection = db.collection('user');
-
-        // 查询一条数据
-        collection.findOne({username: userInfo.username, password: userInfo.password}, function(err, doc) {
-            // console.log(doc);
-            if(doc != null) {
-                res.status(200).send({ message: '登录成功' })
-            }else {
-                console.log('登录失败');
-                res.status(200).send({ message: '登录失败' })
-            }
-        });
-
-        // 关闭连接数据库
-        client.close();
+    databasetool.findOne('user', {username, password}, (err, doc) => {
+        if(doc != null) {
+            req.session.loginedName = username
+            res.status(200).send({ message: '登录成功' })
+        }else {
+            res.status(200).send({ message: '登录失败' })
+        }
     })
-
-
-
-
-
-
-    
 }
 
 // 注册函数
 exports.doRegisterPage = (req, res) => {
     // 拿到用户名和密码
-    const userInfo = req.body;
-    if(userInfo.vcode != req.session.vcode) {
-        res.send({ message: '验证码错误' })
+    const {username, password} = req.body; 
+
+    if(req.body.vcode != req.session.vcode) {
+        res.status(200).send({ message: '验证码错误' })
         return false;
     }
+    // 判断用户名是否存在
+    databasetool.findOne('user', {username}, (err, doc) => {
+        if(doc != null) {
+            res.status(200).send({ message: '用户名已存在' })
+            return;
+        }else {
+            // 执行新增函数
+            databasetool.insertOne('user', {username, password}, (err, result) => {
+                if(result != null) {            
+                   res.send({ message: '注册成功' })
+                }else {  
+                  res.send({ message: '注册成功' })
+                }
+            }) 
+        }
+    }) 
+}
 
-    MongoClient.connect(DBurl, {useNewUrlParser: true}, (err, client) => {
-        // 断言 判断是否报错, 是就停止函数
-        assert.equal(null, err);
-        //console.log('连接成功');
-        const db = client.db(dbname);
-        // Get the documents collection 要连接的集合/表
-        const collection = db.collection('user');
-
-        // 查询一条数据
-        collection.findOne({username: userInfo.username}, function(err, doc) {
-            // console.log(doc);
-            if(doc != null) {
-                res.send({ message: '用户名已存在' })
-                return false;
-            }
-        });
-        // 执行添加函数 增加一条
-        collection.insertOne({username: userInfo.username, password: userInfo.password}, function(error, result) {
-            
-            if(result.result.n == 1) {
-                res.status(200).send({ message: '注册成功' })
-            }else {  
-                res.send({ message: '注册失败' })
-            }
-        });
-
-        
-
-        // 关闭连接数据库
-        client.close();
-    })
-
-
-
-
-
-
-    
+// 退出登录函数
+exports.logoutPage = (req, res) => {
+    // 清空登录凭证
+    req.session.loginedName = null;
+    // 跳转到登录页面
+    res.send('<script>location.href = "/account/login.html"</script>')
 }

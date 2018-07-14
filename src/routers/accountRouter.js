@@ -14,6 +14,8 @@ accountRouter.post('/dologin', accountCTRL.doLoginPage);
 accountRouter.post('/doRegister', accountCTRL.doRegisterPage);
 // 随机数图片模块
 accountRouter.get('/vcode', accountCTRL.getImgPage);
+// 退出登录模块
+accountRouter.get('/logout', accountCTRL.logoutPage);
 
 // 暴露出去
 module.exports = accountRouter;
