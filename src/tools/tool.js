@@ -7,10 +7,8 @@ const ObjectId = require('mongodb').ObjectId;
 exports.ObjectId = ObjectId;
 // 引入mongodb的断言
 const assert = require('assert');
-
 // Connection URL
 const DBurl = 'mongodb://localhost:27017';
- 
 // Database Name
 const dbname = 'test';
 

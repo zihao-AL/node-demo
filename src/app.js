@@ -36,8 +36,6 @@ app.all('*', (req, res, next) => {
     }
 })
 
-
-
 // 登录注册
 const accountRouter = require(path.join(__dirname, "./routers/accountRouter.js"));
 // 登录注册路由模块

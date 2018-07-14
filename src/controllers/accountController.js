@@ -1,7 +1,9 @@
 // 引入path模块
 const path = require('path');
 // 数据库
-const databasetool = require(path.join(__dirname, "../tools/tool.js"));
+// const databasetool = require(path.join(__dirname, "../tools/tool.js"));
+// 封装好了, 上传到npmjs上面的
+const databasetool = require('purple-tools');
 
 // 引入随机数字图片
 const captchapng = require('captchapng');

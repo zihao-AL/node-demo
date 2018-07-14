@@ -1,7 +1,9 @@
 const path = require('path');
 const xtpl = require('xtpl');
 // 引入mongodb封装查询函数
-const databasetool = require(path.join(__dirname, "../tools/tool.js"));
+// const databasetool = require(path.join(__dirname, "../tools/tool.js"));
+// 封装好了, 上传到npmjs上面的
+const databasetool = require('purple-tools');
 
 // 引入学生信息列表页面
 exports.getStudentListPage = (req, res) => {
